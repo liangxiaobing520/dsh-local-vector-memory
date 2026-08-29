@@ -22,8 +22,20 @@ export function apply(ctx, input = {}) {
     embeddings,
   });
 
+  const backupTimer = cfg.backupIntervalHours > 0
+    ? setInterval(() => {
+        runtime.backupMemory().catch((error) => {
+          logger?.debug?.(
+            `[dsh-local-vector-memory] scheduled backup failed: ${String(error?.message || error)}`,
+          );
+        });
+      }, cfg.backupIntervalHours * 3600 * 1000)
+    : null;
+  if (backupTimer && typeof backupTimer.unref === "function") backupTimer.unref();
+
   ctx.effect(
     () => () => {
+      if (backupTimer) clearInterval(backupTimer);
       try {
         store.close();
       } catch {
