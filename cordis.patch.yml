@@ -1,0 +1,6 @@
+# dsh-local-vector-memory bundle patch.
+# 默认配置全部内置在 lib/config.mjs;需要改时在 profiles/web/cordis.patch.yml
+# 用 id: local-vector-memory 覆盖 config(注意:是整段替换,不是深合并)。
+- insert:
+    - id: local-vector-memory
+      name: 'dsh-local-vector-memory'
