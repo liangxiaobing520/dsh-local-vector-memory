@@ -1,7 +1,7 @@
 {
   "name": "dsh-local-vector-memory",
-  "version": "0.2.0",
-  "description": "DSH 本地向量记忆插件:小 embedding 模型负责向量化,本地 9B 负责会话结束时的记忆提取,SQLite 存储,自动召回注入上下文。",
+  "version": "0.2.1",
+  "description": "DSH 本地向量记忆插件:本地 embedding 向量化 + SQLite 存储 + RRF 混合检索自动召回;DeepSeek 云端 deepseek-v4-pro 会话结束自动提取;支持取代链、置顶记忆、软删除回收站与定时备份。",
   "type": "module",
   "main": "index.mjs",
   "exports": {

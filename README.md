@@ -1,26 +1,26 @@
 # dsh-local-vector-memory
 
-本地向量记忆插件 for DeepSeek Harness(DSH)。全本地、零外部依赖:小 embedding 模型负责向量化,SQLite 存向量,对话自动召回注入,会话结束可选 9B 自动提取。
+本地向量记忆插件 for DeepSeek Harness(DSH)。本地 embedding 向量化 + SQLite 单文件存储,对话自动召回注入;会话结束由 DeepSeek 云端 deepseek-v4-pro 自动提取。
 
-*A fully local vector memory plugin for DeepSeek Harness: local embeddings, SQLite storage, automatic recall injection, optional LLM extraction at session flush.*
+*A local-first vector memory plugin for DeepSeek Harness: local embeddings, SQLite storage, automatic recall injection, and DeepSeek cloud v4-pro extraction at session flush.*
 
 ## 特性
 
-- **写入三条路**:手动 `memory_add`;用户消息命中记忆线索(记住/以后/偏好/约定/不要…)时毫秒级自动捕获;可选本地 9B 在会话结束时从整段对话提取记忆(`autoExtract`,默认关)
+- **写入三条路**:手动 `memory_add`;用户消息命中记忆线索(记住/以后/偏好/约定/不要…)时毫秒级自动捕获;DeepSeek 云端 deepseek-v4-pro 在会话结束时从整段对话提取记忆(`autoExtract`,默认开)
 - **防矛盾记忆**:写入时检测与已有记忆的冲突/过时(相似度 ≥0.86 但未达完全重复),提示改用 `memory_update` 更新旧记忆而不是新增重复条目
 - **回收站**:`memory_forget` 默认软删除,`memory_restore` 可恢复;`purge=true` 才永久删除
 - **在线备份**:`memory_backup` 用 SQLite `VACUUM INTO` 生成一致性快照(安全于手工复制 WAL 库),默认保留 5 份
 - **自动召回**:每次 agent 推理前检索 top-K 相关记忆注入上下文(`<local-memory>` 标签),会话内 LRU 去重
 - **批量向量化**:提取/重建索引一次 HTTP 批量请求,失败自动逐条回退
 - **关键词兜底**:embedding 服务不可用时退化为中英文关键词匹配,写入照常
-- **全本地**:向量库是单个 SQLite 文件(`node:sqlite`,Node ≥22.5),无云、无遥测
+- **本地存储**:向量库是单个 SQLite 文件(`node:sqlite`,Node ≥22.5);embedding 全本地,提取走 DeepSeek 云端
 
 ## 需求
 
 - DSH(DeepSeek Harness),web profile
 - Node.js ≥ 22.5(内置 `node:sqlite`)
 - OpenAI 兼容的本地 embedding 服务(见下文,推荐 Qwen3-Embedding-0.6B + llama-server)
-- 可选:OpenAI 兼容的本地聊天服务用于 `memory_extract`(默认接本地 Qwythos-9B)
+- DeepSeek 官方云端 API(`deepseek-v4-pro`)用于提取;API key 配置在 cordis.patch.yml
 
 ## 安装
 
