@@ -1,6 +1,6 @@
 {
   "name": "dsh-local-vector-memory",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "DSH 本地向量记忆插件:小 embedding 模型负责向量化,本地 9B 负责会话结束时的记忆提取,SQLite 存储,自动召回注入上下文。",
   "type": "module",
   "main": "index.mjs",
